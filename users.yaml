@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM template to create an IAM User with permissions to manage Lambda, DynamoDB, and Amazon Connect.
+
+Resources:
+  LambdaDynamoDBConnectUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: lambda-dynamodb-connect-user
+
+  LambdaDynamoDBConnectGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: LambdaDynamoDBConnectGroup
+
+  LambdaDynamoDBConnectPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LambdaDynamoDBConnectPolicy
+      Groups:
+        - !Ref LambdaDynamoDBConnectGroup
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              # Lambda actions
+              - lambda:CreateFunction
+              - lambda:UpdateFunctionCode
+              - lambda:UpdateFunctionConfiguration
+              - lambda:DeleteFunction
+              - lambda:GetFunction
+              - lambda:ListFunctions
+              - lambda:AddPermission
+              - lambda:RemovePermission
+              # DynamoDB actions
+              - dynamodb:CreateTable
+              - dynamodb:DeleteTable
+              - dynamodb:UpdateTable
+              - dynamodb:DescribeTable
+              - dynamodb:ListTables
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              # Amazon Connect actions
+              - connect:CreateInstance
+              - connect:DescribeInstance
+              - connect:DeleteInstance
+              - connect:ListInstances
+              - connect:CreateContactFlow
+              - connect:UpdateContactFlowContent
+              - connect:UpdateContactFlowName
+              - connect:DeleteContactFlow
+              - connect:DescribeContactFlow
+              - connect:ListContactFlows
+            Resource: '*'
+
+  AddUserToGroup:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref LambdaDynamoDBConnectGroup
+      Users:
+        - !Ref LambdaDynamoDBConnectUser
+
+Outputs:
+  IAMUserName:
+    Description: IAM User created
+    Value: !Ref LambdaDynamoDBConnectUser
+
+  IAMGroupName:
+    Description: IAM Group with permissions
+    Value: !Ref LambdaDynamoDBConnectGroup

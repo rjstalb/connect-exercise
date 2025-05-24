@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Testing Connect Contact Flow with Lambda Integration
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs22.x
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  ConnectContactFlow:
+    Type: AWS::Connect::ContactFlow
+    Properties:
+      InstanceArn: arn:aws:connect:us-east-1:182796259395:instance/7a4d7080-c46e-452e-b6e1-c693cbb2412b
+      Name: InboundContactFlow
+      Type: CONTACT_FLOW
+      Content: |
+        {
+          "Version": "2019-10-30",
+          "StartAction": "StartAction-999",
+          "Metadata": {
+            "Annotations": [],
+            "name": "RS Demo Flow",
+            "description": "For the proj",
+            "type": "contactFlow"
+          },
+          "Actions": [
+            {
+              "Parameters": {},
+              "Identifier": "DisconnectParticipant-999",
+              "Type": "DisconnectParticipant",
+              "Transitions": {}
+            },
+            {
+              "Parameters": {
+                "Text": "Something happened but its not us its you. Way to go."
+              },
+              "Identifier": "MessageParticipant-999",
+              "Type": "MessageParticipant",
+              "Transitions": {
+                "NextAction": "DisconnectParticipant-999",
+                "Errors": [
+                  {
+                    "NextAction": "DisconnectParticipant-999",
+                    "ErrorType": "NoMatchingError"
+                  }
+                ]
+              }
+            },
+            {
+              "Parameters": {
+                "Text": "We got 'em. Nice."
+              },
+              "Identifier": "MessageParticipant-111",
+              "Type": "MessageParticipant",
+              "Transitions": {
+                "NextAction": "DisconnectParticipant-999",
+                "Errors": [
+                  {
+                    "NextAction": "DisconnectParticipant-999",
+                    "ErrorType": "NoMatchingError"
+                  }
+                ]
+              }
+            },
+            {
+              "Parameters": {
+                "Text": "Heyoh! We be checking those digits. Thanks."
+              },
+              "Identifier": "StartAction-999",
+              "Type": "MessageParticipant",
+              "Transitions": {
+                "NextAction": "InvokeLambdaFunction-007",
+                "Errors": [
+                  {
+                    "NextAction": "InvokeLambdaFunction-007",
+                    "ErrorType": "NoMatchingError"
+                  }
+                ]
+              }
+            },
+            {
+              "Parameters": {
+                "LambdaFunctionARN": "arn:aws:lambda:us-east-1:182796259395:function:ttec-vanity-connect-app-VanityLambda-jwj4B5AxIibW",
+                "InvocationTimeLimitSeconds": "3",
+                "LambdaInvocationAttributes": {},
+                "ResponseValidation": {
+                  "ResponseType": "STRING_MAP"
+                }
+              },
+              "Identifier": "InvokeLambdaFunction-007",
+              "Type": "InvokeLambdaFunction",
+              "Transitions": {
+                "NextAction": "MessageParticipant-111",
+                "Errors": [
+                  {
+                    "NextAction": "MessageParticipant-999",
+                    "ErrorType": "NoMatchingError"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      Description: Inbound call contact flow created by SAM
+

@@ -1,0 +1,87 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "e95d60c0-e95e-4f86-9904-0639dcc39f2b",
+  "Metadata": {
+    "Annotations": [],
+    "name": "RS TTEC Exercise 2",
+    "description": "For the proj",
+    "type": "contactFlow"
+  },
+  "Actions": [
+    {
+      "Parameters": {},
+      "Identifier": "387a1596-3931-498c-a403-7667fb4cb927",
+      "Type": "DisconnectParticipant",
+      "Transitions": {}
+    },
+    {
+      "Parameters": {
+        "Text": "Something happened but its not us its you. Way to go."
+      },
+      "Identifier": "a26c7a4d-f42f-43b8-a394-8f74c82ba0b1",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
+        "Errors": [
+          {
+            "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "Text": "We got 'em. Nice."
+      },
+      "Identifier": "778f9d81-1551-4372-9375-8b88a311b1e3",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
+        "Errors": [
+          {
+            "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "Text": "Heyoh! We be checking those digits. Thanks."
+      },
+      "Identifier": "e95d60c0-e95e-4f86-9904-0639dcc39f2b",
+      "Type": "MessageParticipant",
+      "Transitions": {
+        "NextAction": "b1949e38-d7d8-4603-9a76-8090efdfaac1",
+        "Errors": [
+          {
+            "NextAction": "b1949e38-d7d8-4603-9a76-8090efdfaac1",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Parameters": {
+        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:182796259395:function:ttec-vanity-connect-app-VanityLambda-0fxapJTCaFxC",
+        "InvocationTimeLimitSeconds": "3",
+        "LambdaInvocationAttributes": {},
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        }
+      },
+      "Identifier": "b1949e38-d7d8-4603-9a76-8090efdfaac1",
+      "Type": "InvokeLambdaFunction",
+      "Transitions": {
+        "NextAction": "778f9d81-1551-4372-9375-8b88a311b1e3",
+        "Errors": [
+          {
+            "NextAction": "a26c7a4d-f42f-43b8-a394-8f74c82ba0b1",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    }
+  ]
+}
