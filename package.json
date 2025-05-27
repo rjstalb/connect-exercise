@@ -5,10 +5,10 @@
   "scripts": {
     "build": "tsc && npm run copy",
     "copy": "npx copyfiles -f ./src/data/words.txt ./dist/data",
-    "deploy": "sam deploy --guided",
+    "deploy": "npm run build && sam deploy --guided",
     "lambda-dev-deploy": "npm run build && sam deploy --guided -t ./lambda-only.yaml",
     "dev": "ts-node src/dev-invoke.ts",
-    "dev-build": "npm run build && sam local invoke",
+    "sam-dev": "npm run build && sam local invoke",
     "test": "jest"
   },
   "author": "",

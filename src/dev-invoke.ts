@@ -1,15 +1,14 @@
 import { ConnectContactFlowEvent } from 'aws-lambda/trigger/connect-contact-flow';
 import { handler } from '.';
 
-// const ph = '+18002262627'; // BANANAS
-const ph = '+19186888758';
+const phoneNumber = '+18002262627'; // BANANAS
 
 const mockEvent: ConnectContactFlowEvent = {
   Details: {
     ContactData: {
       CustomerEndpoint: {
         Type: 'TELEPHONE_NUMBER',
-        Address: ph,
+        Address: phoneNumber,
       },
       Attributes: {},
       Channel: 'VOICE',
