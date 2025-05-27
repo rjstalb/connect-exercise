@@ -8,3 +8,6 @@ export const PHONE_MAP: { [key: string]: string[] } = {
   "8": ["T", "U", "V"],
   "9": ["W", "X", "Y", "Z"]
 }
+
+// Number of vanity suggestions to return in the TTS response
+export const TOTAL_VANITY_SUGGESTIONS = 3;

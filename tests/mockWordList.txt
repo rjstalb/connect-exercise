@@ -1,4 +1,0 @@
-banana
-bananas
-test
-success

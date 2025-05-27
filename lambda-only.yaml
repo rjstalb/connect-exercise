@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: ttec-connect-app Vanity Number Generator using TypeScript
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs22.x
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  RSConnectVanityTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: RSConnectVanityTable
+      AttributeDefinitions:
+        - AttributeName: CallerId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: CallerId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  VanityLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/index.handler
+      Environment:
+        Variables:
+          DB_TABLE: !Ref RSConnectVanityTable
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RSConnectVanityTable
+
+Outputs:
+  VanityLambdaArn:
+    Description: 'ARN of the Vanity Lambda'
+    Value: !GetAtt VanityLambda.Arn

@@ -1,16 +1,10 @@
-import * as fs from 'fs';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import wordListPath from 'word-list';
 import { PhoneNumberVanity, VanityResults } from './models';
 import { PHONE_MAP } from './constants';
 
 const phoneUtil: PhoneNumberUtil = PhoneNumberUtil.getInstance();
 
-
-const wordList = fs.readFileSync(wordListPath, 'utf8').split('\n').map(word => word.toUpperCase());
-const wordSet = new Set(wordList.map(word => word.toUpperCase()));
-
-export function findMatchingVanityWords(digits: string): VanityResults {
+export function findMatchingVanityWords(digits: string, wordSet = new Set<string>()): VanityResults {
 
   const phoneNumber = phoneUtil.parseAndKeepRawInput(digits);
 
@@ -106,4 +100,20 @@ function buildBestMatches(phoneNumber: PhoneNumberVanity, resultsCount = 5): str
   }
 
   return results.slice(0, resultsCount);
+}
+
+export function buildTextToSpeechResponse(vanitySuggestions: string[], numVanitySuggestions = 3): string {
+
+  if (!vanitySuggestions || vanitySuggestions.length === 0) {
+    return 'No vanity number suggestions available.';
+  }
+  if (vanitySuggestions.length > numVanitySuggestions) {
+    vanitySuggestions = vanitySuggestions.slice(0, numVanitySuggestions);
+  }
+
+  const actualCountAvailable = Math.min(numVanitySuggestions, vanitySuggestions.length);
+  const isPlural = actualCountAvailable > 1;
+  const awareResponse = actualCountAvailable < numVanitySuggestions ? `Only ${vanitySuggestions.length} suggestions available.` : '';
+  const formattedSuggestions = vanitySuggestions.map((suggestion, index) => `Suggestion ${index + 1}) ${suggestion}`).join(', ');
+  return `${awareResponse} Here ${isPlural ? 'are' : 'is'} ${actualCountAvailable} vanity number suggestion${isPlural ? 's' : ''}. ${formattedSuggestions}.`;
 }
