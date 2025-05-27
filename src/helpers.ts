@@ -1,5 +1,5 @@
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { PhoneNumberVanity, VanityResults } from './models';
+import { BroadcastResponse, PhoneNumberVanity, VanityResults } from './models';
 import { PHONE_MAP } from './constants';
 
 const phoneUtil: PhoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -102,10 +102,15 @@ function buildBestMatches(phoneNumber: PhoneNumberVanity, resultsCount = 5): str
   return results.slice(0, resultsCount);
 }
 
-export function buildTextToSpeechResponse(vanitySuggestions: string[], numVanitySuggestions = 3): string {
-
+export function buildTextToSpeechResponse(vanitySuggestions: string[], numVanitySuggestions = 3): BroadcastResponse {
+  let broadcaseResponse: BroadcastResponse = {
+    message: '',
+    suggestion1: '',
+    suggestion2: '',
+    suggestion3: ''
+  };
   if (!vanitySuggestions || vanitySuggestions.length === 0) {
-    return 'No vanity number suggestions available.';
+    broadcaseResponse.message = 'Unfortunately, no vanity number suggestions are available.';
   }
   if (vanitySuggestions.length > numVanitySuggestions) {
     vanitySuggestions = vanitySuggestions.slice(0, numVanitySuggestions);
@@ -114,6 +119,15 @@ export function buildTextToSpeechResponse(vanitySuggestions: string[], numVanity
   const actualCountAvailable = Math.min(numVanitySuggestions, vanitySuggestions.length);
   const isPlural = actualCountAvailable > 1;
   const awareResponse = actualCountAvailable < numVanitySuggestions ? `Only ${vanitySuggestions.length} suggestions available.` : '';
-  const formattedSuggestions = vanitySuggestions.map((suggestion, index) => `Suggestion ${index + 1}) ${suggestion}`).join(', ');
-  return `${awareResponse} Here ${isPlural ? 'are' : 'is'} ${actualCountAvailable} vanity number suggestion${isPlural ? 's' : ''}. ${formattedSuggestions}.`;
+
+  broadcaseResponse.message = `${awareResponse} Here ${isPlural ? 'are' : 'is'} ${actualCountAvailable} vanity number suggestion${isPlural ? 's' : ''}.`;
+
+  // returning empty suggestions if no suggestions available
+  // since Connect SSML provides no conditional logic support and
+  // we are trying to keep the Flow architecture simplified fo sake of time.
+  for (let i = 0; i < numVanitySuggestions; i++) {
+    const key = `suggestion${i + 1}` as keyof BroadcastResponse;
+    broadcaseResponse[key] = vanitySuggestions[i] || '';
+  }
+  return broadcaseResponse
 }

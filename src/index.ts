@@ -5,6 +5,7 @@ import { buildTextToSpeechResponse, findMatchingVanityWords } from './helpers';
 import * as fs from 'fs';
 import path from 'path';
 import { TOTAL_VANITY_SUGGESTIONS } from './constants';
+import { BroadcastResponse } from './models';
 
 
 
@@ -34,11 +35,11 @@ export const handler = async (event: ConnectContactFlowEvent): Promise<any> => {
     }
   }).promise();
 
-  const response = buildTextToSpeechResponse(buildVanity.bestCombinations, TOTAL_VANITY_SUGGESTIONS);
-  console.log('TTS Response:', response);
+  const broadcastResponse: BroadcastResponse = buildTextToSpeechResponse(buildVanity.bestCombinations, TOTAL_VANITY_SUGGESTIONS);
+  console.log('TTS Response:', broadcastResponse);
   return {
     statusCode: 200,
-    ttsResponse: response
+    ...broadcastResponse,
   };
 };
 

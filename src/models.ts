@@ -23,3 +23,5 @@ export interface VanityResults {
   phoneVanityOuput: PhoneNumberVanity;
   bestCombinations: string[];
 }
+
+export interface BroadcastResponse { message: string, suggestion1: string, suggestion2: string, suggestion3: string }
