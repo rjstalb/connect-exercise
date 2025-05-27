@@ -1,5 +1,8 @@
 import { ConnectContactFlowEvent } from 'aws-lambda';
-import { processFlowEvent } from '../src';
+import { handler } from '../src';
+import { findMatchingVanityWords } from '../src/helpers';
+import fs from 'node:fs';
+jest.mock('fs')
 
 const mockEvent: ConnectContactFlowEvent = {
   Details: {
@@ -28,14 +31,21 @@ const mockEvent: ConnectContactFlowEvent = {
   Name: 'ContactFlowEvent'
 };
 
+jest.mock('fs');
+
 describe('AWS Connect Flow Event', () => {
+  beforeEach(() => {
+    (fs as any).__setMockFiles({
+      'mockWordList.txt': 'wordListPath',
+    });
+  });
   it('should read Customer phone number correctly', () => {
-    expect(processFlowEvent(mockEvent)).toHaveProperty('phoneNumber', '+1234567890');
+    expect(handler(mockEvent)).toHaveProperty('phoneNumber', '+1234567890');
   });
 
   it('should generate a list of vanity combinations', () => {
-    const { vanityNumbers } = processFlowEvent(mockEvent);
-    console.log('vanityNumbers', vanityNumbers);
-    expect(vanityNumbers).toHaveLength(5);
+    const phoneNumber = mockEvent.Details?.ContactData?.CustomerEndpoint?.Address || '';
+    const buildVanity = findMatchingVanityWords(phoneNumber);
+    expect(buildVanity.bestCombinations).toHaveLength(5);
   });
 });

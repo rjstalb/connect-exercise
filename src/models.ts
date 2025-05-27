@@ -1,61 +1,25 @@
-// export interface ConnectFlowEvent {
-//   Details: ConnectFlow;
-//   Name: string;
-// }
+export interface PhoneNumberVanity {
+  phoneNumber: string;
+  countryCode: string;
+  areaCode: string;
+  prefix: string;
+  line: string;
+  fullLineNumber: string;
+  vanityCombinations?: VanityCombinations
+}
 
-// export interface ConnectFlow {
-//   ContactData: ContactData;
-//   Parameters: any;
-// }
+export interface VanityCombinations {
+  areaCode: string[];
+  prefix: string[];
+  line: string[];
+  fullLineNumber: string[];
+  areaCodeWordMatch?: string[];
+  prefixWordMatch?: string[];
+  lineWordMatch?: string[];
+  fullLineWordMatch?: string[];
+}
 
-// export interface ContactData {
-//   Attributes: any;
-//   AwsRegion: string;
-//   Channel: string;
-//   ContactId: string;
-//   CustomerEndpoint: Endpoint;
-//   CustomerId: null;
-//   Description: null;
-//   InitialContactId: string;
-//   InitiationMethod: string;
-//   InstanceARN: string;
-//   LanguageCode: string;
-//   MediaStreams: MediaStreams;
-//   Name: null;
-//   PreviousContactId: string;
-//   Queue: null;
-//   References: any;
-//   RelatedContactId: null;
-//   SegmentAttributes: SegmentAttributes;
-//   SystemEndpoint: Endpoint;
-//   Tags: any;
-// }
-
-// export interface Endpoint {
-//   Address: string;
-//   Type: string;
-// }
-
-// export interface MediaStreams {
-//   Customer: Customer;
-// }
-
-// export interface Customer {
-//   Audio: null;
-// }
-
-// export interface SegmentAttributes {
-//   "connect:Subtype": ConnectSubtype;
-// }
-
-// export interface ConnectSubtype {
-//   ValueInteger: null;
-//   ValueList: null;
-//   ValueMap: null;
-//   ValueString: string;
-// }
-
-// export interface Tags {
-//   "aws:connect:instanceId": string;
-//   "aws:connect:systemEndpoint": string;
-// }
+export interface VanityResults {
+  phoneVanityOuput: PhoneNumberVanity;
+  bestCombinations: string[];
+}
