@@ -16,13 +16,9 @@ const dbClient = new DynamoDB.DocumentClient({ params: { TableName: 'RSConnectVa
 export const handler = async (event: ConnectContactFlowEvent): Promise<any> => {
 
   const phoneNumber = event.Details?.ContactData?.CustomerEndpoint?.Type === 'TELEPHONE_NUMBER' ? event.Details?.ContactData?.CustomerEndpoint?.Address || '' : '';
-  console.log('Phone Number:', phoneNumber);
   const wordList = fs.readFileSync(wordListPath, 'utf8').split('\n').map(word => word.toUpperCase());
   const wordSet = new Set(wordList.map(word => word.toUpperCase()));
-  console.log('Word List Size:', wordSet.size);
-
   const buildVanity = findMatchingVanityWords(phoneNumber, wordSet);
-  console.log('Vanity Combinations:', buildVanity.bestCombinations);
 
   // Normally would check if bestCombinations is empty before proceeding
   // but want to record the most recent time each phone number was processed regardless
@@ -36,7 +32,7 @@ export const handler = async (event: ConnectContactFlowEvent): Promise<any> => {
   }).promise();
 
   const broadcastResponse: BroadcastResponse = buildTextToSpeechResponse(buildVanity.bestCombinations, TOTAL_VANITY_SUGGESTIONS);
-  console.log('TTS Response:', broadcastResponse);
+
   return {
     statusCode: 200,
     ...broadcastResponse,
