@@ -26,8 +26,7 @@ export const handler = async (event: ConnectContactFlowEvent): Promise<any> => {
     TableName: process.env.DB_TABLE!,
     Item: {
       CallerId: phoneNumber,
-      VanityOptions: buildVanity.bestCombinations || [],
-      wordListSize: wordSet.size,
+      VanityOptions: buildVanity.bestCombinations || []
     }
   }).promise();
 
