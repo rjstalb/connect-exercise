@@ -97,6 +97,7 @@ The base deliverable is to present the caller with `3` vanity options. If for so
 <!-- ARCHITECTURE DIAGRAM -->
 ### Architecture Diagram
 
+![Flow Diagram](basic_flow.png)
 <!-- IMPLEMENTATION NOTES -->
 ### Implementation Notes
 
@@ -225,6 +226,8 @@ Running a production environment with our architecture (AWS Connect, Lambda, and
     ```sh
     npm run test
     ```
+
+    A note on tests - this is not my favorite or go-to jest config. I instead just relied on basic test harnessing in order to get the lambda built, working, and deploying. The intention was to be a bit more TDD, or at least much more thorough, but time was not on my side.
 
 2. Deploying to AWS
 
