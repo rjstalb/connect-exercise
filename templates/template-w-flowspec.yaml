@@ -54,31 +54,36 @@ Resources:
       Content: |
         {
           "Version": "2019-10-30",
-          "StartAction": "StartAction-999",
+          "StartAction": "e95d60c0-e95e-4f86-9904-0639dcc39f2b",
           "Metadata": {
+            "entryPointPosition": {
+              "x": 40,
+              "y": 40
+            },
             "Annotations": [],
             "name": "RS Demo Flow",
-            "description": "For the proj",
-            "type": "contactFlow"
+            "description": "Connect flow exercise.",
+            "type": "contactFlow",
+            "hash": {}
           },
           "Actions": [
             {
               "Parameters": {},
-              "Identifier": "DisconnectParticipant-999",
+              "Identifier": "387a1596-3931-498c-a403-7667fb4cb927",
               "Type": "DisconnectParticipant",
               "Transitions": {}
             },
             {
               "Parameters": {
-                "Text": "Something happened but its not us its you. Way to go."
+                "Text": "Something happened but its not us, its you."
               },
-              "Identifier": "MessageParticipant-999",
+              "Identifier": "a26c7a4d-f42f-43b8-a394-8f74c82ba0b1",
               "Type": "MessageParticipant",
               "Transitions": {
-                "NextAction": "DisconnectParticipant-999",
+                "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
                 "Errors": [
                   {
-                    "NextAction": "DisconnectParticipant-999",
+                    "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
                     "ErrorType": "NoMatchingError"
                   }
                 ]
@@ -86,15 +91,15 @@ Resources:
             },
             {
               "Parameters": {
-                "Text": "We got 'em. Nice."
+                "Text": "Hi! We're so happy you called. We'll try to build a list of our top 3 vanity number suggestions generated from the phone number you're calling from."
               },
-              "Identifier": "MessageParticipant-111",
+              "Identifier": "e95d60c0-e95e-4f86-9904-0639dcc39f2b",
               "Type": "MessageParticipant",
               "Transitions": {
-                "NextAction": "DisconnectParticipant-999",
+                "NextAction": "b1949e38-d7d8-4603-9a76-8090efdfaac1",
                 "Errors": [
                   {
-                    "NextAction": "DisconnectParticipant-999",
+                    "NextAction": "b1949e38-d7d8-4603-9a76-8090efdfaac1",
                     "ErrorType": "NoMatchingError"
                   }
                 ]
@@ -102,15 +107,15 @@ Resources:
             },
             {
               "Parameters": {
-                "Text": "Heyoh! We be checking those digits. Thanks."
+                "SSML": "<say-as interpret-as=\"verbatim\">$.External.message</say-as>\n\n<say-as interpret-as=\"telephone\">$.External.suggestion1</say-as>\n\n<say-as interpret-as=\"telephone\">$.External.suggestion2</say-as>\n\n<say-as interpret-as=\"telephone\">$.External.suggestion3</say-as>"
               },
-              "Identifier": "StartAction-999",
+              "Identifier": "778f9d81-1551-4372-9375-8b88a311b1e3",
               "Type": "MessageParticipant",
               "Transitions": {
-                "NextAction": "InvokeLambdaFunction-007",
+                "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
                 "Errors": [
                   {
-                    "NextAction": "InvokeLambdaFunction-007",
+                    "NextAction": "387a1596-3931-498c-a403-7667fb4cb927",
                     "ErrorType": "NoMatchingError"
                   }
                 ]
@@ -120,18 +125,17 @@ Resources:
               "Parameters": {
                 "LambdaFunctionARN": "arn:aws:lambda:us-east-1:182796259395:function:ttec-vanity-connect-app-VanityLambda-jwj4B5AxIibW",
                 "InvocationTimeLimitSeconds": "3",
-                "LambdaInvocationAttributes": {},
                 "ResponseValidation": {
-                  "ResponseType": "STRING_MAP"
+                  "ResponseType": "JSON"
                 }
               },
-              "Identifier": "InvokeLambdaFunction-007",
+              "Identifier": "b1949e38-d7d8-4603-9a76-8090efdfaac1",
               "Type": "InvokeLambdaFunction",
               "Transitions": {
-                "NextAction": "MessageParticipant-111",
+                "NextAction": "778f9d81-1551-4372-9375-8b88a311b1e3",
                 "Errors": [
                   {
-                    "NextAction": "MessageParticipant-999",
+                    "NextAction": "a26c7a4d-f42f-43b8-a394-8f74c82ba0b1",
                     "ErrorType": "NoMatchingError"
                   }
                 ]
