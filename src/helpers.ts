@@ -4,6 +4,18 @@ import { PHONE_MAP } from './constants';
 
 const phoneUtil: PhoneNumberUtil = PhoneNumberUtil.getInstance();
 
+/**
+ * Finds matching vanity words for a given phone number string using a provided set of words.
+ *
+ * This function parses the input digits into a phone number, extracts its area code, prefix, and line number,
+ * and generates all possible alphanumeric combinations for these segments. It then matches these combinations
+ * against the provided word set to find valid vanity words. The function returns the parsed phone number details
+ * along with the best matching vanity word combinations.
+ *
+ * @param digits - The phone number as a string of digits.
+ * @param wordSet - An optional set of valid words to match against the generated combinations. Defaults to an empty set.
+ * @returns An object containing the parsed phone number details and the best matching vanity word combinations.
+ */
 export function findMatchingVanityWords(digits: string, wordSet = new Set<string>()): VanityResults {
 
   const phoneNumber = phoneUtil.parseAndKeepRawInput(digits);
@@ -58,6 +70,17 @@ export function findMatchingVanityWords(digits: string, wordSet = new Set<string
 
 }
 
+/**
+ * Generates all possible alphanumeric combinations for a given phone number string,
+ * based on the standard telephone keypad mapping (e.g., '2' -> 'ABC').
+ *
+ * Each digit in the input string is mapped to its corresponding set of letters,
+ * and the function returns all possible combinations by replacing each digit with
+ * its possible letters. Digits without a mapping are used as-is.
+ *
+ * @param phoneNumber - The input phone number as a string of digits.
+ * @returns An array of all possible alphanumeric combinations for the given phone number.
+ */
 function getAlphaCombinations(phoneNumber: string): string[] {
   if (!phoneNumber) {
     return [];
@@ -81,6 +104,20 @@ function getAlphaCombinations(phoneNumber: string): string[] {
   return alphaNumericResults;
 }
 
+/**
+ * Builds a list of the best vanity phone number matches based on the provided phone number object.
+ *
+ * The function prioritizes matches in the following order:
+ * 1. Full line word matches (e.g., area code + full line word combination)
+ * 2. Line number word matches (e.g., area code + prefix + line word combination)
+ * 3. Prefix number word matches (e.g., area code + prefix word combination + line)
+ * If there are not enough matches to satisfy the requested results count, it fills the remainder
+ * with generic full line number combinations.
+ *
+ * @param phoneNumber - The phone number object containing vanity combinations and number parts.
+ * @param resultsCount - The maximum number of results to return. Defaults to 5.
+ * @returns An array of formatted vanity phone number strings, up to the specified results count.
+ */
 function buildBestMatches(phoneNumber: PhoneNumberVanity, resultsCount = 5): string[] {
   if (!phoneNumber || !phoneNumber.vanityCombinations) {
     return [];
@@ -102,6 +139,18 @@ function buildBestMatches(phoneNumber: PhoneNumberVanity, resultsCount = 5): str
   return results.slice(0, resultsCount);
 }
 
+/**
+ * Builds a response object for text-to-speech broadcast containing vanity number suggestions.
+ *
+ * @param vanitySuggestions - An array of vanity number suggestion strings.
+ * @param numVanitySuggestions - The maximum number of suggestions to include in the response (default is 3).
+ * @returns A `BroadcastResponse` object containing a message and up to three suggestions.
+ *
+ * @remarks
+ * - If no suggestions are available, the message will indicate this and suggestions will be empty strings.
+ * - If fewer suggestions are available than requested, the message will reflect the actual count.
+ * - The function ensures the returned object always has `suggestion1`, `suggestion2`, and `suggestion3` keys.
+ */
 export function buildTextToSpeechResponse(vanitySuggestions: string[], numVanitySuggestions = 3): BroadcastResponse {
   let broadcaseResponse: BroadcastResponse = {
     message: '',

@@ -1,4 +1,3 @@
-import { region } from './../node_modules/aws-sdk/clients/health.d';
 import { DynamoDB } from 'aws-sdk';
 import { ConnectContactFlowEvent } from 'aws-lambda';
 import { buildTextToSpeechResponse, findMatchingVanityWords } from './helpers';
@@ -13,6 +12,16 @@ const wordListPath = path.join(__dirname, 'data', 'words.txt');
 
 const dbClient = new DynamoDB.DocumentClient({ params: { TableName: 'RSConnectVanityTable' } });
 
+/**
+ * AWS Lambda handler for processing ConnectContactFlowEvent events.
+ *
+ * This function extracts the caller's phone number from the event, reads a list of words,
+ * finds matching vanity words for the phone number, stores the results in a DynamoDB table,
+ * and returns a response suitable for text-to-speech broadcast.
+ *
+ * @param event - The AWS ConnectContactFlowEvent containing contact and customer endpoint details.
+ * @returns A promise that resolves to an object containing the HTTP status code and broadcast response.
+ */
 export const handler = async (event: ConnectContactFlowEvent): Promise<any> => {
 
   const phoneNumber = event.Details?.ContactData?.CustomerEndpoint?.Type === 'TELEPHONE_NUMBER' ? event.Details?.ContactData?.CustomerEndpoint?.Address || '' : '';
